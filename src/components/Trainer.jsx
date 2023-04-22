@@ -1,30 +1,48 @@
 import React, { useRef } from "react";
 import { useGLTF, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import gsap from "gsap";
+
+export const HEIGHT = 2.3;
+export const NUM = 3;
 
 export default function Trainer(props) {
   const { nodes, materials } = useGLTF("./models/trainer.glb");
   const meshRef = useRef();
+  const tl = useRef();
 
   const scroll = useScroll();
-  console.log(scroll);
-
-  React.useEffect(() => {
-    if (meshRef.current) {
-      meshRef.current.position.x = -2;
-      meshRef.current.scale.set(0.8, 0.8, 0.8);
-
-      // meshRef.current.position.y = 0.5;
-      // meshRef.current.rotation.x = -0.5;
-    }
-  }, []);
 
   useFrame(({ mouse, viewport }) => {
-    const x = (mouse.x * viewport.width) / 4;
-    const y = (mouse.y * viewport.height) / 4;
+    tl.current.seek(scroll.offset * tl.current.duration());
+    const x = mouse.x * viewport.width;
+    const y = mouse.y * viewport.height;
     meshRef.current.rotation.y = (x * Math.PI) / 180;
-    meshRef.current.rotation.x = (-y * Math.PI) / 180;
+    gsap.to(meshRef.current.rotation, {
+      duration: 10,
+      y: Math.PI * 2,
+      repeat: -1,
+      ease: "none",
+    });
   });
+
+  React.useEffect(() => {
+    tl.current = gsap.timeline();
+    if (meshRef.current) {
+      tl.current.to(meshRef.current.position, {
+        duration: 2,
+        y: -HEIGHT * (NUM - 1),
+      });
+      meshRef.current.rotation.x = -0.5;
+      meshRef.current.position.y = 1.5;
+    }
+    gsap.to(meshRef.current.rotation, {
+      duration: 10,
+      y: Math.PI * 2,
+      repeat: -1,
+      ease: "none",
+    });
+  }, []);
 
   return (
     <group ref={meshRef} {...props} dispose={null}>

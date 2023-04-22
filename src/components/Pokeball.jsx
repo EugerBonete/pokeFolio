@@ -1,52 +1,60 @@
 import React, { useLayoutEffect, useRef } from "react";
-import { Html, useGLTF } from "@react-three/drei";
+import { Html, useGLTF, useScroll } from "@react-three/drei";
 import gsap from "gsap";
-import { Tween } from "gsap/gsap-core";
-import { TweenMax } from "gsap/gsap-core";
 import { useFrame } from "@react-three/fiber";
+import { HEIGHT, NUM } from "./Trainer";
 
 export default function Pokeball(props) {
   const { nodes, materials } = useGLTF("./models/pokeball.glb");
 
-  const comp = useRef();
-  const ball = useRef();
+  const comp = useRef(); // create a ref for the root level element (for scoping)
+  const meshRef = useRef();
+  const tl = useRef();
 
-  if (ball.current && props.start) {
-    gsap.fromTo(
-      ball.current.position,
-      {
-        y: 10,
-        duration: 2,
-        ease: "bounce",
-        delay: 1,
-      },
-      {
-        y: 0,
-        duration: 2,
-        ease: "bounce",
-        delay: 1,
-      }
-    );
-    gsap.from(ball.current, {
-      x: 300,
-      stagger: 0.25,
-      duration: 3,
-      scrollTrigger: {
-        trigger: ball.current,
-        pin: true,
-        end: `+=${window?.innerHeight * 1.3}`,
-      },
-    });
-  }
+  const scroll = useScroll();
 
-  useFrame(() => {
-    ball.current.rotation.z += 0.03;
-    ball.current.rotation.y = 0.5;
+  useFrame(({ mouse, viewport }) => {
+    const x = (mouse.x * viewport.width) / 2;
+    const y = (mouse.y * viewport.height) / 2;
+    meshRef.current.rotation.y = (x * Math.PI) / 180;
   });
+
+  useLayoutEffect(() => {
+    if (props.start) {
+      gsap.fromTo(
+        meshRef.current.position,
+        {
+          y: 30,
+          opacity: 0,
+          duration: 2,
+        },
+        {
+          y: 0,
+          duration: 1,
+          opacity: 1,
+          ease: "bounce",
+        }
+      );
+      gsap.to(meshRef.current.position, {
+        x: -2,
+        opacity: 0,
+        duration: 2,
+        // delay: 1.5,
+        ease: "circ",
+      });
+      gsap.to(meshRef.current.rotation, {
+        y: 0.5,
+        z: 0.5,
+        opacity: 0,
+        duration: 2,
+        // delay: 1.5,
+      });
+    }
+  }, [props.start]);
 
   return (
     <group
-      ref={ball}
+      ref={meshRef}
       {...props}
       dispose={null}
       className="flex items-center justify-center ball"

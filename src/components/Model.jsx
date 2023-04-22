@@ -30,7 +30,7 @@ export default function Model(props) {
   });
 
   return (
-    <group {...props} dispose={null} ref={ref}>
+    <group className="hidden" {...props} dispose={null} ref={ref}>
       <mesh
         geometry={nodes.base_fireRed_material_0.geometry}
         material={materials.fireRed_material}

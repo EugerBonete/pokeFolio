@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { useProgress } from "@react-three/drei";
 import { HashLoader } from "react-spinners";
 import gsap from "gsap";
+import Button from "./Button";
 
 export default function LoadingScreen({
   start,
@@ -22,10 +23,16 @@ export default function LoadingScreen({
   }, []);
 
   const startHandler = () => {
+    setInterval(() => {
+      setStart(true);
+    }, 1000);
     const tl = gsap.timeline();
-    setStart(true);
     let ctx = gsap.context(() => {
-      if (loaderRef.current) {
+      if (containerRef.current && loaderRef.current) {
+        gsap.to(containerRef.current, {
+          opacity: 0,
+          delay: 1,
+        });
         gsap.to(loaderRef.current, {
           scale: 100,
         });
@@ -33,35 +40,26 @@ export default function LoadingScreen({
           delay: 1,
           scale: 1,
           opacity: 0,
-        });
-      }
-      if (containerRef.current) {
-        gsap.to(containerRef.current, {
-          opacity: 0,
-          delay: 1,
+          zIndex: 0,
         });
       }
     }, comp);
 
     return () => ctx.revert();
   };
-
   return (
     <div
       ref={containerRef}
       className={`dark:bg-gray-900 bg-gray-100 absolute top-0 left-0
-   right-0 bottom-0 flex items-center justify-between flex-col z-10
+   right-0 bottom-0 flex items-center justify-between flex-col ${
+     start ? "z-0" : "z-40"
+   }
    `}
     >
       <div></div>
       {progress === 100 ? (
         <div className="flex flex-col items-center justify-center gap-5">
-          <button
-            className="btn btn-outline bg-red-500 hover:bg-red-600 shadow-lg text-dark dark:text-white hover:text-white"
-            onClick={startHandler}
-          >
-            start
-          </button>
+          <Button title="Start" click={startHandler} />
         </div>
       ) : (
         <HashLoader color="#EF4444" />
@@ -70,7 +68,7 @@ export default function LoadingScreen({
       <div
         ref={loaderRef}
         style={{ width: `${progress}%` }}
-        className={`bg-[#FF6347] block h-5 self-start`}
+        className={`bg-[#4b5563] dark:bg-gray-100 block h-5 self-start`}
       ></div>
     </div>
   );
