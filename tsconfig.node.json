@@ -7,8 +7,8 @@
   },
   "include": ["vite.config.ts"],
   "exclude": [
-    "src/components/Experience.jsx",
-    "src/components/Model.jsx",
-    "src/components/Trainer.jsx"
+    "src/components/Experience/index.jsx",
+    "src/components/Experience/Model.jsx",
+    "src/components/Experience/Trainer.jsx"
   ]
 }

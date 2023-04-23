@@ -1,8 +1,6 @@
 import { useState } from "react";
-import Experience from "./components/Experience.jsx";
-import Overlay from "./components/Overlay.js";
+import Experience from "./components/Experience/index.jsx";
 import ThemeToggle from "./components/ThemeToggle.js";
-import { BiChevronDown } from "react-icons/bi";
 import { useRef } from "react";
 import gsap from "gsap";
 

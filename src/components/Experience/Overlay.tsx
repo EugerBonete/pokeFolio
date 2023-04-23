@@ -1,16 +1,11 @@
-import React, { useLayoutEffect, useRef, useEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { Scroll } from "@react-three/drei";
 import { BiChevronDown } from "react-icons/bi";
 
-interface OverlayProps {
-  start: boolean;
-}
-
-export default function Overlay({ start }: OverlayProps) {
-  const comp = useRef<HTMLDivElement>(null); // specify type of ref
-  const text = useRef<HTMLHeadingElement>(null); // specify type of ref
-  const containerRef = useRef<HTMLDivElement>(null); // specify type of ref
+export default function Overlay({ start }: { start: boolean }) {
+  const comp = useRef(); // create a ref for the root level element (for scoping)
+  const text = useRef(null);
 
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
@@ -30,19 +25,14 @@ export default function Overlay({ start }: OverlayProps) {
     return () => ctx.revert();
   }, [start]);
 
-  const handleScroll = () => {
-    console.log("Container scrolled!");
+  const Section = ({ children }: { children: any }): any => {
+    <section className="h-screen flex flex-col justify-center p-10 bg-red-500">
+      {children}
+    </section>;
   };
 
-  if (containerRef.current) {
-    containerRef.current.addEventListener("scroll", handleScroll);
-    return () => {
-      containerRef.current?.removeEventListener("scroll", handleScroll);
-    };
-  }
-
   return (
-    <Scroll ref={containerRef} html>
+    <Scroll html>
       <div className="flex justify-center text-center flex-col items-end scroll-smooth h-screen w-screen">
         <h1 ref={text} className="text-2xl w-full">
           Welcome to my portfolio!

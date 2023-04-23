@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { useProgress } from "@react-three/drei";
 import { HashLoader } from "react-spinners";
 import gsap from "gsap";
-import Button from "./Button";
+import Button from "../Button";
 
 export default function LoadingScreen({
   start,
