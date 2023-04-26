@@ -1,21 +1,20 @@
 import { useState } from "react";
 import Experience from "./components/Experience/index.jsx";
 import ThemeToggle from "./components/ThemeToggle.js";
-import { useRef } from "react";
-import gsap from "gsap";
 
 function App() {
-  const arrowRef = useRef(null);
-  const timeline = gsap.timeline({ repeat: -1 });
-  timeline
-    .to(arrowRef.current, { y: -10, ease: "power1.out", duration: 0.9 })
-    .to(arrowRef.current, { y: 0, ease: "power1.out", duration: 0.9 })
-    .to(arrowRef.current, { y: -10, ease: "power1.out", duration: 0.9 })
-    .to(arrowRef.current, { y: 0, ease: "power1.out", duration: 0.9 });
+  const [dark, setDark] = useState<boolean>(false);
+
   return (
-    <div className="h-screen flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-[#9ca3b1] text-black">
-      <ThemeToggle />
-      <Experience />
+    <div
+      className={`h-screen flex flex-col dark:text-white text-black ${
+        dark
+          ? "bg-gradient-to-b from-[#404040] to-[#938a82]"
+          : "bg-gradient-to-b from-[#e3e4e8] to-[#897f84]"
+      }`}
+    >
+      <ThemeToggle dark={dark} setDark={setDark} />
+      <Experience dark={dark} />
     </div>
   );
 }

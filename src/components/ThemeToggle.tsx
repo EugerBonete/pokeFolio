@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { FiMoon, FiSun } from "react-icons/fi";
 
-export default function ThemeToggle() {
-  const [dark, setDark] = useState<boolean>(false);
+interface ThemeToggleProps {
+  dark: boolean;
+  setDark: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function ThemeToggle({ dark, setDark }: ThemeToggleProps) {
   const handleThemeChange = () => {
     setDark(!dark);
     if (dark) {
