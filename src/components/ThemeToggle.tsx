@@ -17,8 +17,8 @@ export default function ThemeToggle({ dark, setDark }: ThemeToggleProps) {
   };
 
   return (
-    <div className="self-end mr-[10vw] mt-[3vh] md:mt-[5vh] z-50 absolute">
-      <div className="flex items-center justify-center gap-5 text-3xl">
+    <div className="self-end mr-[5vw] md:mr-[7vw] mt-[3vh] md:mt-[5vh] z-50 absolute">
+      <div className="flex items-center justify-center gap-5 text-lg md:text-xl">
         <FiSun />
         <input
           type="checkbox"

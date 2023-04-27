@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Html, useGLTF, useScroll } from "@react-three/drei";
 import gsap from "gsap";
 import { useFrame } from "@react-three/fiber";
@@ -9,51 +9,46 @@ export default function Pokeball(props) {
   const scroll = useScroll();
   const ballRef = useRef();
   const tl = useRef();
+
   useFrame(({ state, delta, mouse }) => {
-    // tl.current.seek(scroll.offset * tl.current.duration());
+    tl.current.seek(scroll.offset * tl.current.duration());
     // const x = (mouse.x * Math.PI) / 8;
     // const y = (mouse.y * Math.PI) / 2;
     // ballRef.current.rotation.set(0, x, 0);
-    if (scroll.offset > 0) {
-      gsap.to(ballRef.current.position, {
-        y: 20,
-        duration: 2,
-      });
-    }
+    // if (scroll.offset > 0) {
+    //   gsap.to(ballRef.current.position, {
+    //     y: 20,
+    //     duration: 2,
+    //   });
+    // }
   });
-
   useLayoutEffect(() => {
-    gsap.from(ballRef.current.position, {
-      y: 4,
-      ease: "bounce",
-      duration: 2,
-    });
+    ballRef.current.rotation.x = -1.5;
+    ballRef.current.position.y = -0.5;
 
-    if (props.sizeProp === "sm") {
-      gsap.to(ballRef.current.position, {
-        x: 0.2,
-      });
-    }
-
-    if (props.sizeProp === "md") {
-      gsap.to(ballRef.current.position, {
-        x: -1.6,
+    let ctx = gsap.context(() => {
+      gsap.from(ballRef.current.position, {
+        y: 4,
         ease: "bounce",
-        delay: 2,
+        duration: 1,
       });
-    }
-
-    if (props.sizeProp === "lg") {
-      gsap.to(ballRef.current.position, {
-        x: -1.9,
-        ease: "bounce",
-        delay: 2,
+      gsap.to(ballRef.current.rotation, {
+        x: -1.5,
+        y: 0,
+        z: 0,
+        delay: 1,
       });
-    }
 
-    // ballRef.current.rotation.x = 5;
-    // ballRef.current.rotation.y = 0.1 / 4;
-    // ballRef.current.rotation.z = 0.1;
+      tl.current = gsap.timeline({
+        defaults: { duration: 2, ease: "power1.inOut" },
+      });
+
+      tl.current
+        .to(ballRef.current.position, { x: -1, y: 0.5, z: 0 }, 0.5)
+        .to(ballRef.current.rotation, { x: -1, y: -1, z: 0 }, 0.5);
+    }, tl);
+
+    return () => ctx.revert();
   }, []);
 
   return (

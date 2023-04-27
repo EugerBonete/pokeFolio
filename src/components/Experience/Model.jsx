@@ -1,33 +1,32 @@
 import React, { useLayoutEffect, useRef } from "react";
-import { useGLTF, useScroll } from "@react-three/drei";
-import { Vector3 } from "three";
+import { Html, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import gsap from "gsap";
 
 export default function Model(props) {
   const { nodes, materials } = useGLTF("./models/room.glb");
+
+  const scroll = useScroll();
   const ref = useRef();
   const tl = useRef();
 
-  useLayoutEffect(() => {
-    tl.current = gsap.timeline();
-    tl.current.from(
-      ref.current.position,
-      {
-        x: -50,
-        rotation: 180,
-        duration: 2,
-      },
-      0
-    );
-  }, []);
-
-  useFrame(({ mouse, viewport }) => {
-    const x = (mouse.x * viewport.width) / 8;
-    const y = (mouse.y * viewport.height) / 8;
-    ref.current.rotation.y = (x * Math.PI) / 180;
-    ref.current.rotation.x = (-y * Math.PI) / 180;
+  useFrame(() => {
+    tl.current.seek(scroll.offset * tl.current.duration());
   });
+
+  useLayoutEffect(() => {
+    ref.current.rotation.x = 0.5;
+    let ctx = gsap.context(() => {
+      tl.current = gsap.timeline({
+        defaults: { duration: 2, ease: "power1.inOut" },
+      });
+      tl.current.from(ref.current.position, { x: -0.4, y: 0.7, z: 10 }, 0.5);
+      tl.current.from(ref.current.scale, { x: 1.5, y: 1.5, z: 1.5 }, 0.5);
+      tl.current.from(ref.current.rotation, { x: -0.4, y: 0, z: 0 }, 0.5);
+    }, tl);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <group className="hidden" {...props} dispose={null} ref={ref}>
@@ -50,7 +49,20 @@ export default function Model(props) {
       <mesh
         geometry={nodes.Computer_fireRed_material_0.geometry}
         material={materials.fireRed_material}
-      />
+        //pc
+      >
+        <Html
+          className="content"
+          rotation-x={-Math.PI / 2}
+          position={[0, 0.05, -0.09]}
+          transform
+          occlude
+        >
+          <div className="wrapper" onPointerDown={(e) => e.stopPropagation()}>
+            <h1>hello world</h1>
+          </div>
+        </Html>
+      </mesh>
       <mesh
         geometry={nodes.TV_stand_fireRed_material_0.geometry}
         material={materials.fireRed_material}
@@ -58,6 +70,7 @@ export default function Model(props) {
       <mesh
         geometry={nodes.TV_fireRed_material_0.geometry}
         material={materials.fireRed_material}
+        //tv
       />
       <mesh
         geometry={nodes.carpet_A_fireRed_material_0.geometry}

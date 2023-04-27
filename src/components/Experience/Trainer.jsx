@@ -15,11 +15,12 @@ export default function Trainer(props) {
     tl.current.seek(scroll.offset * tl.current.duration());
 
     const x = (mouse.x * Math.PI) / 8;
-    const y = (mouse.y * Math.PI) / 2;
     trainerRef.current.rotation.set(0, x, 0);
   });
 
   useLayoutEffect(() => {
+    trainerRef.current.position.y = 1.1;
+    trainerRef.current.rotation.x = 1.1;
     tl.current = gsap.timeline({
       defaults: { duration: 2, ease: "power1.inOut" },
     });
@@ -55,7 +56,7 @@ export default function Trainer(props) {
       dispose={null}
       initial={{ y: 10, rotateY: 100 }}
       animate={{ y: 0, rotateY: 0 }}
-      transition={{ delay: 0.2, type: "spring", stiffness: 50 }}
+      transition={{ delay: 0.2, type: "spring" }}
     >
       <mesh
         geometry={nodes.Object_2.geometry}
